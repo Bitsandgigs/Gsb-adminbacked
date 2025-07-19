@@ -87,6 +87,7 @@ const departmentRoutes = require("./routes/departmentRoutes");
 const videoCategoryRoutes = require("./routes/videoCategoryRoutes");
 const adminRoutes = require("./routes/adminRoutes");
 const uploadRoutes = require("./routes/uploadRoutes");
+const subscriptionPlanRoutes = require("./routes/subscriptionPlanRoutes");
 
 app.use("/api/auth", authRoutes);
 app.use("/api/admin", adminRoutes);
@@ -108,6 +109,7 @@ app.use("/api/easebuzz", easebuzzRoutes);
 app.use("/api/mock", mockDataRoutes);
 app.use("/api/dept", departmentRoutes);
 app.use("/api/video-categories", videoCategoryRoutes);
+app.use("/api/subscription-plans", subscriptionPlanRoutes);
 
 // Health check endpoint
 app.get("/api/health", (req, res) => {

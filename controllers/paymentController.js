@@ -14,28 +14,40 @@ exports.createPayment = async (req, res) => {
       description,
     } = req.body;
 
+    if (
+      !userId ||
+      !amount ||
+      !paymentMethod ||
+      !transactionId ||
+      !subscriptionType
+    ) {
+      return res.status(400).json({ error: "Missing required fields" });
+    }
+    if (amount <= 0) {
+      return res.status(400).json({ error: "Amount must be positive" });
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
     const payment = new Payment({
       user: userId,
-      amount,
+      amount: parseFloat(amount),
       paymentMethod,
       transactionId,
       subscriptionType,
       source: source || "app",
       description,
-      status: "completed",
+      status: paymentMethod === "easebuzz" ? "pending" : "completed",
     });
 
     await payment.save();
-    const user = await User.findByIdAndUpdate(
-      userId,
-      { subscribed: true },
-      { new: true }, // Return the updated user document
-    );
-
-    // Check if user exists
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
+    if (payment.status === "completed") {
+      await User.findByIdAndUpdate(userId, { subscribed: true }, { new: true });
     }
+
     res.status(201).json({ message: "Payment recorded successfully", payment });
   } catch (error) {
     res.status(400).json({ error: error.message });
