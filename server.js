@@ -2,11 +2,13 @@ require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const dotenv = require("dotenv");
 const { createServer } = require("http");
 const initializeSocketIO = require("./chat_socket_io");
 const { connectDB } = require("./config/db");
 const app = express();
 const server = createServer(app);
+
 
 // Initialize Socket.IO
 const io = initializeSocketIO(server);
