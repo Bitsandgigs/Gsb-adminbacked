@@ -10,7 +10,7 @@ const connectDB = async () => {
       process.env.MONGODB_URI?.slice(0, 30) + "...",
     );
     console.log("process.env.MONGODB_URI:-12", process.env.MONGODB_URI);
-    await mongoose.connect(process.env.MONGODB_URI);
+    await mongoose.connect("mongodb+srv://info:Test%401234@gsb.thgny2b.mongodb.net/gsbdb?retryWrites=true&w=majority"); //process.env.MONGODB_URI
     console.log("✅ MongoDB connected successfully");
   } catch (err) {
     console.error("❌ MongoDB connection failed:", err.message);
