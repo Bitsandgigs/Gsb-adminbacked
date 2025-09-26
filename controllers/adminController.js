@@ -1,5 +1,6 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const Admin = require("../models/Admin");
 
 // In-memory admin storage (replace with database model if needed)
 let admins = [];
@@ -60,6 +61,9 @@ exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
+    console.log("Admin login attempt:", email);
+    console.log("Admins in memory:", typeof password);
+
     if (!email || !password) {
       return res.status(400).json({
         message: "Email and password are required",
@@ -67,15 +71,21 @@ exports.login = async (req, res) => {
     }
 
     // Find admin
-    const admin = admins.find((admin) => admin.email === email);
+    const admin = await Admin.findOne({ email });
+    console.log("Found admin:", admin);
     if (!admin) {
       return res.status(401).json({
         message: "Invalid credentials",
       });
     }
 
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     // Check password
-    const isValidPassword = await bcrypt.compare(password, admin.password);
+    const isValidPassword = await bcrypt.compare(password, hashedPassword);
+
+
     if (!isValidPassword) {
       return res.status(401).json({
         message: "Invalid credentials",
@@ -92,6 +102,8 @@ exports.login = async (req, res) => {
       process.env.JWT_SECRET || "your-secret-key",
       { expiresIn: "24h" },
     );
+
+    console.log("users details", admin.id, admin.email, admin.role);
 
     res.status(200).json({
       message: "Login successful",
