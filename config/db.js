@@ -9,6 +9,7 @@ const connectDB = async () => {
       "Connecting to MongoDB:",
       process.env.MONGODB_URI?.slice(0, 30) + "...",
     );
+    console.log("process.env.MONGODB_URI:-12", process.env.MONGODB_URI);
     await mongoose.connect(process.env.MONGODB_URI);
     console.log("✅ MongoDB connected successfully");
   } catch (err) {
