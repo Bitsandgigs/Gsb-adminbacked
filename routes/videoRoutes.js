@@ -21,7 +21,7 @@ const videoUpload = require("../middlewares/videouploadMiddleware");
 
 router.get("/", videoController.getAllVideos);
 router.post("/", videoUpload, videoController.uploadVideo);
-router.put("/:id", videoUpload, videoController.updateVideo);
+router.patch("/:id", videoUpload, videoController.updateVideo);
 router.delete("/:id", videoController.deleteVideo);
 
 module.exports = router;

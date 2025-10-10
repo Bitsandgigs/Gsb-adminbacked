@@ -1,6 +1,6 @@
 const DailyUpdate = require("../models/DailyUpdate");
 const User = require("../models/User"); // Import User model
-const { uploadFileToS3, deleteFileFromS3 } = require("../services/s3Uploader");
+const { uploadFileToGCS, deleteFileFromGCS } = require("../services/s3Uploader");
 const multer = require("multer");
 
 exports.addDailyUpdate = async (req, res) => {
@@ -25,7 +25,7 @@ exports.addDailyUpdate = async (req, res) => {
       return res.status(400).json({ message: "Invalid user ID" });
     }
 
-    imageUrl = await uploadFileToS3(image, "dailyupdates");
+    imageUrl = await uploadFileToGCS(image, "dailyupdates");
 
     const updateData = {
       title,
@@ -46,7 +46,7 @@ exports.addDailyUpdate = async (req, res) => {
     });
   } catch (err) {
     if (imageUrl) {
-      await deleteFileFromS3(imageUrl);
+      await deleteFileFromGCS(imageUrl);
     }
     res
       .status(500)
@@ -98,9 +98,9 @@ exports.updateDailyUpdate = async (req, res) => {
       if (!existingUpdate) {
         return res.status(404).json({ message: "Daily update not found" });
       }
-      updateData.imageUrl = await uploadFileToS3(image, "dailyupdates");
+      updateData.imageUrl = await uploadFileToGCS(image, "dailyupdates");
       if (existingUpdate.imageUrl) {
-        await deleteFileFromS3(existingUpdate.imageUrl);
+        await deleteFileFromGCS(existingUpdate.imageUrl);
       }
     }
 
@@ -136,7 +136,7 @@ exports.deleteDailyUpdate = async (req, res) => {
     }
 
     if (dailyUpdate.imageUrl) {
-      await deleteFileFromS3(dailyUpdate.imageUrl);
+      await deleteFileFromGCS(dailyUpdate.imageUrl);
     }
 
     await DailyUpdate.deleteOne({ _id: id });
@@ -194,7 +194,7 @@ exports.getDailyUpdateOnUserId = async (req, res) => {
   }
 };
 // const DailyUpdate = require("../models/DailyUpdate");
-// const { uploadFileToS3, deleteFileFromS3 } = require("../services/s3Uploader");
+// const { uploadFileToGCS, deleteFileFromGCS } = require("../services/s3Uploader");
 
 // exports.addDailyUpdate = async (req, res) => {
 //   let imageUrl = null; // Initialize imageUrl
@@ -213,7 +213,7 @@ exports.getDailyUpdateOnUserId = async (req, res) => {
 //       return res.status(400).json({ message: "User ID is required" });
 //     }
 
-//     imageUrl = await uploadFileToS3(image, "dailyupdates");
+//     imageUrl = await uploadFileToGCS(image, "dailyupdates");
 
 //     const updateData = {
 //       title,
@@ -236,7 +236,7 @@ exports.getDailyUpdateOnUserId = async (req, res) => {
 //   } catch (err) {
 //     // Clean up S3 file if creation fails
 //     if (imageUrl) {
-//       await deleteFileFromS3(imageUrl);
+//       await deleteFileFromGCS(imageUrl);
 //     }
 //     res
 //       .status(500)
@@ -290,9 +290,9 @@ exports.getDailyUpdateOnUserId = async (req, res) => {
 //         return res.status(404).json({ message: "Daily update not found" });
 //       }
 //       // Upload new image and delete old one
-//       updateData.imageUrl = await uploadFileToS3(image, "dailyupdates");
+//       updateData.imageUrl = await uploadFileToGCS(image, "dailyupdates");
 //       if (existingUpdate.imageUrl) {
-//         await deleteFileFromS3(existingUpdate.imageUrl);
+//         await deleteFileFromGCS(existingUpdate.imageUrl);
 //       }
 //     }
 
@@ -329,7 +329,7 @@ exports.getDailyUpdateOnUserId = async (req, res) => {
 
 //     // Delete image from S3
 //     if (dailyUpdate.imageUrl) {
-//       await deleteFileFromS3(dailyUpdate.imageUrl);
+//       await deleteFileFromGCS(dailyUpdate.imageUrl);
 //     }
 
 //     await DailyUpdate.deleteOne({ _id: id });

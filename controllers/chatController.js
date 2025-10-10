@@ -1,7 +1,7 @@
 const Chat = require("../models/Chat");
 const TeamMember = require("../models/TeamMember");
 const mongoose = require("mongoose");
-const { uploadFileToS3 } = require("../services/s3Uploader");
+const { uploadFileToGCS } = require("../services/s3Uploader");
 
 exports.createChat = async (req, res) => {
   try {
@@ -143,7 +143,7 @@ exports.sendMessage = async (req, res) => {
         : file.mimetype.startsWith("video")
           ? "chat/videos"
           : "chat/pdfs";
-      const fileUrl = await uploadFileToS3(file, folder);
+      const fileUrl = await uploadFileToGCS(file, folder);
       message.media = {
         type: file.mimetype.startsWith("image")
           ? "image"

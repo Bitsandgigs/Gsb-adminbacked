@@ -1,5 +1,5 @@
 const Product = require("../models/Product");
-const { uploadFileToS3 } = require("../services/s3Uploader");
+const { uploadFileToGCS } = require("../services/s3Uploader");
 
 const isJSONString = (value) => {
   try {
@@ -29,7 +29,7 @@ const isJSONString = (value) => {
 
 //     // Upload file to S3
 //     try {
-//       imageUrl = await uploadFileToS3(req.file, "product-images");
+//       imageUrl = await uploadFileToGCS(req.file, "product-images");
 //     } catch (uploadError) {
 //       console.error("S3 upload error:", uploadError);
 //       return res.status(500).json({
@@ -94,7 +94,7 @@ exports.createProduct = async (req, res) => {
     // Upload file to S3
     let imageUrl;
     try {
-      imageUrl = await uploadFileToS3(file, "product-images");
+      imageUrl = await uploadFileToGCS(file, "product-images");
       console.log("S3 upload successful, URL:", imageUrl);
     } catch (uploadError) {
       console.error("S3 upload error:", uploadError);

@@ -110,15 +110,17 @@
 
 
 // s3Client.js
-const { S3Client } = require("@aws-sdk/client-s3");
 
-const s3 = new S3Client({
-  region: "ap-south-1",
-  credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-  },
+const { Storage } = require("@google-cloud/storage");
+const path = require("path");
+
+const storage = new Storage({
+  keyFilename: path.join(__dirname, "../gcs-key.json"), // Service Account key
+  projectId: process.env.GCP_PROJECT_ID,
 });
 
-module.exports = s3;
+const bucket = storage.bucket(process.env.GCS_BUCKET_NAME);
+
+module.exports = bucket;
+
 

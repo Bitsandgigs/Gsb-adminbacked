@@ -1,5 +1,5 @@
 const Story = require("../models/Story");
-const { uploadFileToS3 } = require("../services/s3Uploader");
+const { uploadFileToGCS } = require("../services/s3Uploader");
 
 exports.addStory = async (req, res) => {
   try {
@@ -19,8 +19,8 @@ exports.addStory = async (req, res) => {
     }
 
     // Upload images to S3
-    const beforeImageUrl = await uploadFileToS3(beforeImage, "stories");
-    const afterImageUrl = await uploadFileToS3(afterImage, "stories");
+    const beforeImageUrl = await uploadFileToGCS(beforeImage, "stories");
+    const afterImageUrl = await uploadFileToGCS(afterImage, "stories");
 
     // Save story to DB (pseudo code, adapt to your model)
     const story = await Story.create({
@@ -55,7 +55,7 @@ exports.dailyupdate = async (req, res) => {
     }
 
     // Upload image to S3
-    const imageUrl = await uploadFileToS3(image, "stories");
+    const imageUrl = await uploadFileToGCS(image, "stories");
 
     // Save story to DB (pseudo code, adapt to your model)
     // const story = await Story.create({

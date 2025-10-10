@@ -1,6 +1,6 @@
 const Video = require("../models/Video");
 const VideoCategory = require("../models/VideoCategory");
-const { uploadFileToS3, deleteFileFromS3 } = require("../services/s3Uploader");
+const { uploadFileToGCS, deleteFileFromGCS } = require("../services/s3Uploader");
 
 exports.uploadVideo = async (req, res) => {
   try {
@@ -8,6 +8,11 @@ exports.uploadVideo = async (req, res) => {
       req.body;
     const videoFile = req.files?.video?.[0];
     const thumbnailFile = req.files?.thumbnail?.[0];
+
+    console.log("Upload request received:");
+    console.log("Body:", req.body);
+    console.log("Video File:", videoFile);
+    console.log("Thumbnail File:", thumbnailFile);
 
     // Validate inputs
     if (!title) {
@@ -32,9 +37,9 @@ exports.uploadVideo = async (req, res) => {
     let videoUrl = null;
     let thumbnailUrl = null;
     try {
-      videoUrl = videoFile ? await uploadFileToS3(videoFile, "videos") : null;
+      videoUrl = videoFile ? await uploadFileToGCS(videoFile, "videos") : null;
       thumbnailUrl = thumbnailFile
-        ? await uploadFileToS3(thumbnailFile, "thumbnails")
+        ? await uploadFileToGCS(thumbnailFile, "thumbnails")
         : null;
     } catch (uploadError) {
       return res.status(500).json({
@@ -65,8 +70,8 @@ exports.uploadVideo = async (req, res) => {
     });
   } catch (error) {
     // Clean up S3 files if creation fails
-    if (videoUrl) await deleteFileFromS3(videoUrl);
-    if (thumbnailUrl) await deleteFileFromS3(thumbnailUrl);
+    if (videoUrl) await deleteFileFromGCS(videoUrl);
+    if (thumbnailUrl) await deleteFileFromGCS(thumbnailUrl);
     res
       .status(500)
       .json({ message: "Failed to upload video", error: error.message });
@@ -118,15 +123,15 @@ exports.updateVideo = async (req, res) => {
     let thumbnailUrl = existingVideo.thumbnailUrl;
     try {
       if (videoFile) {
-        videoUrl = await uploadFileToS3(videoFile, "videos");
+        videoUrl = await uploadFileToGCS(videoFile, "videos");
         if (existingVideo.videoUrl && !existingVideo.youtubeLink) {
-          await deleteFileFromS3(existingVideo.videoUrl);
+          await deleteFileFromGCS(existingVideo.videoUrl);
         }
       }
       if (thumbnailFile) {
-        thumbnailUrl = await uploadFileToS3(thumbnailFile, "thumbnails");
+        thumbnailUrl = await uploadFileToGCS(thumbnailFile, "thumbnails");
         if (existingVideo.thumbnailUrl) {
-          await deleteFileFromS3(existingVideo.thumbnailUrl);
+          await deleteFileFromGCS(existingVideo.thumbnailUrl);
         }
       }
     } catch (uploadError) {
@@ -177,10 +182,10 @@ exports.deleteVideo = async (req, res) => {
 
     // Delete S3 files
     if (video.videoUrl && !video.youtubeLink) {
-      await deleteFileFromS3(video.videoUrl);
+      await deleteFileFromGCS(video.videoUrl);
     }
     if (video.thumbnailUrl) {
-      await deleteFileFromS3(video.thumbnailUrl);
+      await deleteFileFromGCS(video.thumbnailUrl);
     }
 
     await Video.deleteOne({ _id: id });

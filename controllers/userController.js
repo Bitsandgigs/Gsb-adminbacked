@@ -1,6 +1,6 @@
 const User = require("../models/User");
 const DailyUpdate = require("../models/DailyUpdate");
-const { uploadFileToS3 } = require("../services/s3Uploader");
+const { uploadFileToGCS } = require("../services/s3Uploader");
 
 const multer = require("multer");
 
@@ -20,7 +20,7 @@ exports.updateUser = async (req, res) => {
     if (goal) updateData.goal = goal;
 
     if (req.file) {
-      updateData.photo = await uploadFileToS3(req.file, "users");
+      updateData.photo = await uploadFileToGCS(req.file, "users");
     }
 
     const user = await User.findByIdAndUpdate(
@@ -172,7 +172,7 @@ exports.getUserById = async (req, res) => {
 };
 // const User = require("../models/User");
 // const DailyUpdate = require("../models/DailyUpdate");
-// const { uploadFileToS3 } = require("../services/s3Uploader");
+// const { uploadFileToGCS } = require("../services/s3Uploader");
 
 // const multer = require("multer");
 // exports.createUser = async (req, res) => {
@@ -181,7 +181,7 @@ exports.getUserById = async (req, res) => {
 //     console.log("Create user - Request file:", req.file);
 //     const { fullName, phoneNumber, age, weight, height, goal } = req.body;
 
-//     photoUrl = await uploadFileToS3(req.file, "users");
+//     photoUrl = await uploadFileToGCS(req.file, "users");
 
 //     const user = new User({
 //       fullName,
@@ -218,7 +218,7 @@ exports.getUserById = async (req, res) => {
 //     if (goal) updateData.goal = goal;
 
 //     if (req.file) {
-//       updateData.photo = await uploadFileToS3(req.file, "users");
+//       updateData.photo = await uploadFileToGCS(req.file, "users");
 //     }
 
 //     const user = await User.findByIdAndUpdate(

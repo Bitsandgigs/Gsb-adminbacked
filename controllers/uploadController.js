@@ -1,4 +1,4 @@
-const { uploadFileToS3 } = require("../services/s3Uploader");
+const { uploadFileToGCS } = require("../services/s3Uploader");
 
 exports.uploadToS3 = async (req, res) => {
   try {
@@ -63,7 +63,7 @@ exports.uploadToS3 = async (req, res) => {
     }
 
     console.log(`Uploading file to S3 folder: ${folder}`);
-    const fileUrl = await uploadFileToS3(file, folder);
+    const fileUrl = await uploadFileToGCS(file, folder);
 
     res.status(200).json({
       message: "File uploaded successfully",
