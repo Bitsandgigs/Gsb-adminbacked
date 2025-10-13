@@ -10,7 +10,7 @@ const { connectDB } = require("./config/db");
 const app = express();
 const server = createServer(app);
 
-const PORT = process.env.PORT || 9000;
+const PORT = process.env.PORT || 3000;
 
 // Initialize Socket.IO
 const io = initializeSocketIO(server);
