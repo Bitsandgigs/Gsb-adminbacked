@@ -1,14 +1,16 @@
 require("dotenv").config();
+const dotenv = require("dotenv");
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
-const dotenv = require("dotenv");
+
 const { createServer } = require("http");
 const initializeSocketIO = require("./chat_socket_io");
 const { connectDB } = require("./config/db");
 const app = express();
 const server = createServer(app);
 
+const PORT = process.env.PORT || 9000;
 
 // Initialize Socket.IO
 const io = initializeSocketIO(server);
@@ -65,7 +67,6 @@ app.use(
   express.urlencoded({ limit: "100mb", extended: true, parameterLimit: 50000 })
 );
 app.use(express.static("public"));
-dotenv.config();
 
 // Routes
 const authRoutes = require("./routes/authRoutes");
@@ -148,6 +149,6 @@ app.get("/", (req, res) => {
   });
 });
 
-server.listen(process.env.PORT, "0.0.0.0", () => {
-  console.log(`Server running on port 3000`);
+server.listen(PORT, "0.0.0.0", () => {
+  console.log(`Server running on port ${PORT}`);
 });
