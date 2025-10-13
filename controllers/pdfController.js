@@ -7,7 +7,7 @@ const { Storage } = require("@google-cloud/storage");
 // Initialize GCS Client
 const storage = new Storage({
   projectId: "sublime-night-474607-f8", // same as your GCP project ID
-  keyFilename: './gcs-key.json' // path to service account JSON
+  keyFilename: path.join(__dirname, '../gcs-key.json') // path to service account JSON
 });
 const bucket = storage.bucket('gsbpathy-media');
 
