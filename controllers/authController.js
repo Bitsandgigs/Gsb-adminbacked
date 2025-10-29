@@ -111,18 +111,18 @@ exports.loginUser = async (req, res) => {
 };
 
 exports.verifyOTP = async (req, res) => {
-  const { userId, phoneNumber, otp } = req.body;
-  console.log("➡️ OTP verification attempt:", { userId, phoneNumber, otp });
+  const { phoneNumber, otp } = req.body;
+  console.log("➡️ OTP verification attempt:", { phoneNumber, otp });
 
-  if (!userId || !phoneNumber || !otp) {
+  if (!phoneNumber || !otp) {
     console.log("❌ Missing required fields");
     return res
       .status(400)
-      .json({ error: "User ID, phone number, and OTP are required" });
+      .json({ error: "Phone number and OTP are required" });
   }
 
   try {
-    const user = await User.findOne({ _id: userId, phoneNumber });
+    const user = await User.findOne({ phoneNumber });
     if (!user) {
       console.log("❌ User not found");
       return res.status(404).json({ error: "User not found" });
