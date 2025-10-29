@@ -21,7 +21,7 @@ module.exports = router;
 // router.post("/admin/login", loginAdmin);
 // // router.post('/add-member', addTeamMember);
 
-// router.post("/send-otp", authController.sendOTP);
+router.post("/send-otp", authController.sendOTP);
 // router.post("/verify-otp", authController.verifyOTP);
 // router.post("/user/login", authController.loginUser);
 
