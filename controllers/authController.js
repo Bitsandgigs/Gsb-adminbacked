@@ -1,6 +1,7 @@
 const User = require("../models/User");
 const client = require("../config/twilio");
 const { uploadFileToS3 } = require("../services/s3Uploader");
+const jwt = require("jsonwebtoken");
 
 exports.signUp = async (req, res) => {
   const { fullName, phoneNumber } = req.body;
@@ -159,6 +160,12 @@ exports.verifyOTP = async (req, res) => {
       await user.save();
     }
 
+    const token = jwt.sign(
+        { userId: user._id, phoneNumber: user.phoneNumber },
+        process.env.JWT_SECRET || "default-secret",
+        { expiresIn: "1d" }
+  );
+
     res.status(200).json({
       message:
         user.verified && user.firstTimeLogin
@@ -179,6 +186,7 @@ exports.verifyOTP = async (req, res) => {
         verified: user.verified,
         onboardingStage: user.onboardingStage,
       },
+      token: token
     });
   } catch (error) {
     console.error("❌ Error during OTP verification:", error);
