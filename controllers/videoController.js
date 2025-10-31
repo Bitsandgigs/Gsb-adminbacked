@@ -180,6 +180,10 @@ exports.deleteVideo = async (req, res) => {
       return res.status(404).json({ message: "Video not found" });
     }
 
+    console.log("Deleting video:", video);
+
+    // return res.status(200).json({ message: "Reached delete endpoint", data: video });
+
     // Delete S3 files
     if (video.videoUrl && !video.youtubeLink) {
       await deleteFileFromGCS(video.videoUrl);

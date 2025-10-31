@@ -61,23 +61,24 @@ const uploadFileToGCS = async (file, folder = "uploads") => {
  * @param {string} fileUrl - Public URL of the file to delete
  */
 const deleteFileFromGCS = async (fileUrl) => {
-  if (!fileUrl) {
-    console.log("No file URL provided for deletion; skipping.");
-    return;
-  }
+  if (!fileUrl) return;
 
   try {
     const url = new URL(fileUrl);
-    const key = decodeURIComponent(url.pathname.slice(1)); // remove leading '/'
 
-    console.log(`Deleting file from GCS: ${key}`);
+    // Remove leading `/bucket-name/` from path
+    const fullPath = decodeURIComponent(url.pathname.slice(1));
+    const key = fullPath.replace(`${bucket.name}/`, "");
 
+    console.log("Deleting:", key);
     await bucket.file(key).delete();
-    console.log(`Deletion successful: ${key}`);
+
+    console.log("Deleted successfully");
   } catch (err) {
-    console.error("GCS Deletion Error:", err);
-    throw new Error(`Failed to delete file from GCS: ${err.message}`);
+    console.error("GCS Delete Error:", err);
+    throw new Error(`Failed to delete: ${err.message}`);
   }
 };
+
 
 module.exports = { uploadFileToGCS, deleteFileFromGCS };
