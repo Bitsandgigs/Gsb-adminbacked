@@ -9,6 +9,9 @@ router.get("/", productController.getAllProducts);
 // POST routes (with upload middleware)
 router.post("/", uploadImage, productController.createProduct);
 
+// patch routes (with upload middleware)`
+router.patch("/:id", uploadImage, productController.updateProduct);
+
 // DELETE routes
 router.delete("/:id", productController.deleteProduct);
 
