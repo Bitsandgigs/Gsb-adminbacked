@@ -5,7 +5,7 @@ const authController = require("../controllers/authController");
 const uploadImage = require("../middlewares/imageUploadMiddleware");
 const uploadUserImage = require("../middlewares/userImageUploadMiddleware");
 
-router.put("/update-user/:id", uploadUserImage, userController.updateUser);
+router.patch("/update-user/:id", uploadUserImage, userController.updateUser);
 router.get("/:id/score", userController.getUserWithScore);
 router.get("/all/scores", userController.getAllUsersWithScores);
 router.delete("/delete-user/:id", userController.deleteUser);
